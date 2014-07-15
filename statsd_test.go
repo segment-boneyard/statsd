@@ -30,6 +30,17 @@ func TestIncrement(t *testing.T) {
 	assert(t, buf.String(), "incr:1|c")
 }
 
+func TestIncr(t *testing.T) {
+	buf := new(bytes.Buffer)
+	c := fakeClient(buf)
+	err := c.Incr("incr")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Flush()
+	assert(t, buf.String(), "incr:1|c")
+}
+
 func TestDecrement(t *testing.T) {
 	buf := new(bytes.Buffer)
 	c := fakeClient(buf)
