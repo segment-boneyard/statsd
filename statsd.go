@@ -34,6 +34,12 @@ func Dial(addr string) (*Client, error) {
 	return newClient(conn, 0), nil
 }
 
+// MustDial ignores errors and simply returns the client, useful in tests to serve as more of a mock.
+func MustDial(addr string) *Client {
+	c, _ := Dial(addr)
+	return c
+}
+
 // DialTimeout acts like Dial but takes a timeout. The timeout includes name resolution, if required.
 func DialTimeout(addr string, timeout time.Duration) (*Client, error) {
 	conn, err := net.DialTimeout("udp", addr, timeout)
