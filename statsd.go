@@ -1,32 +1,18 @@
-/*
-Statsd client
-
-Supports counting, sampling, timing, gauges, sets and multi-metrics packet.
-
-Using the client to increment a counter:
-
-	client, err := statsd.Dial("127.0.0.1:8125")
-	if err != nil {
-		// handle error
-	}
-	defer client.Close()
-	err = client.Increment("buckets", 1, 1)
-
-*/
 package statsd
 
 import (
 	"bufio"
 	"fmt"
+	. "github.com/visionmedia/go-debug"
 	"math/rand"
 	"net"
 	"sync"
 	"time"
 )
 
-const (
-	defaultBufSize = 512
-)
+var debug = Debug("statsd")
+
+const defaultBufSize = 512
 
 // Client is statsd client representing a connection to a statsd server.
 type Client struct {
@@ -158,6 +144,7 @@ func (c *Client) send(stat string, rate float64, format string, args ...interfac
 	}
 
 	format = fmt.Sprintf("%s:%s", stat, format)
+	debug(format, args...)
 
 	c.m.Lock()
 	defer c.m.Unlock()
