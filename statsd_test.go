@@ -52,6 +52,17 @@ func TestDecrement(t *testing.T) {
 	assert(t, buf.String(), "decr:-1|c")
 }
 
+func TestDecr(t *testing.T) {
+	buf := new(bytes.Buffer)
+	c := fakeClient(buf)
+	err := c.Decr("decr")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Flush()
+	assert(t, buf.String(), "decr:-1|c")
+}
+
 func TestDuration(t *testing.T) {
 	buf := new(bytes.Buffer)
 	c := fakeClient(buf)

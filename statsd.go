@@ -92,6 +92,11 @@ func (c *Client) Decrement(stat string, count int, rate float64) error {
 	return c.Increment(stat, -count, rate)
 }
 
+// Decrement decrements the counter for the given bucket by 1 at a rate of 1.
+func (c *Client) Decr(stat string) error {
+	return c.Increment(stat, -1, 1)
+}
+
 // Duration records time spent for the given bucket with time.Duration.
 func (c *Client) Duration(stat string, duration time.Duration, rate float64) error {
 	return c.send(stat, rate, "%f|ms", duration.Seconds()*1000)
