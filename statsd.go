@@ -99,7 +99,7 @@ func (c *Client) Decr(stat string) error {
 
 // Duration records time spent for the given bucket with time.Duration.
 func (c *Client) Duration(stat string, duration time.Duration, rate float64) error {
-	return c.send(stat, rate, "%f|ms", duration.Seconds()*1000)
+	return c.send(stat, rate, "%d|ms", millisecond(duration))
 }
 
 // Timing records time spent for the given bucket in milliseconds.
