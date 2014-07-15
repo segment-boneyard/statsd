@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	. "github.com/visionmedia/go-debug"
+	"io"
 	"math/rand"
 	"net"
 	"sync"
@@ -32,6 +33,13 @@ func Dial(addr string) (*Client, error) {
 		return nil, err
 	}
 	return newClient(conn, 0), nil
+}
+
+// NewClient returns a new client with the given writer, useful for testing.
+func NewClient(w io.Writer) *Client {
+	return &Client{
+		buf: bufio.NewWriterSize(w, defaultBufSize),
+	}
 }
 
 // DialTimeout acts like Dial but takes a timeout. The timeout includes name resolution, if required.

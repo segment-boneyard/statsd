@@ -1,17 +1,10 @@
 package statsd
 
 import (
-	"bufio"
 	"bytes"
 	"testing"
 	"time"
 )
-
-func fakeClient(buffer *bytes.Buffer) *Client {
-	return &Client{
-		buf: bufio.NewWriterSize(buffer, defaultBufSize),
-	}
-}
 
 func assert(t *testing.T, value, control string) {
 	if value != control {
@@ -21,7 +14,7 @@ func assert(t *testing.T, value, control string) {
 
 func TestIncrement(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Increment("incr", 1, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -32,7 +25,7 @@ func TestIncrement(t *testing.T) {
 
 func TestIncr(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Incr("incr")
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +36,7 @@ func TestIncr(t *testing.T) {
 
 func TestDecrement(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Decrement("decr", 1, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +47,7 @@ func TestDecrement(t *testing.T) {
 
 func TestDecr(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Decr("decr")
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +58,7 @@ func TestDecr(t *testing.T) {
 
 func TestDuration(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Duration("timing", time.Duration(123456789), 1)
 	if err != nil {
 		t.Fatal(err)
@@ -76,7 +69,7 @@ func TestDuration(t *testing.T) {
 
 func TestIncrementRate(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Increment("incr", 1, 0.99)
 	if err != nil {
 		t.Fatal(err)
@@ -87,7 +80,7 @@ func TestIncrementRate(t *testing.T) {
 
 func TestPreciseRate(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	// The real use case here is rates like 0.0001.
 	err := c.Increment("incr", 1, 0.99901)
 	if err != nil {
@@ -99,7 +92,7 @@ func TestPreciseRate(t *testing.T) {
 
 func TestRate(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Increment("incr", 1, 0)
 	if err != nil {
 		t.Fatal(err)
@@ -110,7 +103,7 @@ func TestRate(t *testing.T) {
 
 func TestGauge(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Gauge("gauge", 300, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -121,7 +114,7 @@ func TestGauge(t *testing.T) {
 
 func TestIncrementGauge(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.IncrementGauge("gauge", 10, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -132,7 +125,7 @@ func TestIncrementGauge(t *testing.T) {
 
 func TestDecrementGauge(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.DecrementGauge("gauge", 4, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -143,7 +136,7 @@ func TestDecrementGauge(t *testing.T) {
 
 func TestUnique(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Unique("unique", 765, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -181,7 +174,7 @@ func TestMilliseconds(t *testing.T) {
 
 func TestTiming(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Timing("timing", 350, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -192,7 +185,7 @@ func TestTiming(t *testing.T) {
 
 func TestTime(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Time("time", 1, func() { time.Sleep(50e6) })
 	if err != nil {
 		t.Fatal(err)
@@ -201,7 +194,7 @@ func TestTime(t *testing.T) {
 
 func TestMultiPacket(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	err := c.Unique("unique", 765, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -216,7 +209,7 @@ func TestMultiPacket(t *testing.T) {
 
 func TestMultiPacketOverflow(t *testing.T) {
 	buf := new(bytes.Buffer)
-	c := fakeClient(buf)
+	c := NewClient(buf)
 	for i := 0; i < 40; i++ {
 		err := c.Unique("unique", 765, 1)
 		if err != nil {
