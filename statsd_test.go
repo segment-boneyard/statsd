@@ -12,6 +12,18 @@ func assert(t *testing.T, value, control string) {
 	}
 }
 
+func TestPrefix(t *testing.T) {
+	buf := new(bytes.Buffer)
+	c := NewClient(buf)
+	c.Prefix("foo.bar.baz.")
+	err := c.Increment("incr", 1, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Flush()
+	assert(t, buf.String(), "foo.bar.baz.incr:1|c")
+}
+
 func TestIncrement(t *testing.T) {
 	buf := new(bytes.Buffer)
 	c := NewClient(buf)

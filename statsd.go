@@ -17,9 +17,10 @@ const defaultBufSize = 512
 
 // Client is statsd client representing a connection to a statsd server.
 type Client struct {
-	conn net.Conn
-	buf  *bufio.Writer
-	m    sync.Mutex
+	conn   net.Conn
+	buf    *bufio.Writer
+	m      sync.Mutex
+	prefix string
 }
 
 func millisecond(d time.Duration) int {
@@ -69,6 +70,13 @@ func newClient(conn net.Conn, size int) *Client {
 		conn: conn,
 		buf:  bufio.NewWriterSize(conn, size),
 	}
+}
+
+// Prefix adds a prefix to every stat string. The prefix is literal,
+// so if you want "foo.bar.baz" from "baz" you should set the prefix
+// to "foo.bar." not "foo.bar" as no delimiter is added for you.
+func (c *Client) Prefix(s string) {
+	c.prefix = s
 }
 
 // Increment increments the counter for the given bucket.
@@ -143,6 +151,10 @@ func (c *Client) Close() error {
 }
 
 func (c *Client) send(stat string, rate float64, format string, args ...interface{}) error {
+	if c.prefix != "" {
+		stat = c.prefix + stat
+	}
+
 	if rate < 1 {
 		if rand.Float64() < rate {
 			format = fmt.Sprintf("%s|@%g", format, rate)
