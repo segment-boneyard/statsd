@@ -109,6 +109,11 @@ func (c *Client) Timing(stat string, delta int, rate float64) error {
 	return c.send(stat, rate, "%d|ms", delta)
 }
 
+// Histogram is an alias of .Timing() until statsd implementations figure their shit out.
+func (c *Client) Histogram(stat string, n int, rate float64) error {
+	return c.send(stat, rate, "%d|ms", n)
+}
+
 // Time calculates time spent in given function and send it.
 func (c *Client) Time(stat string, rate float64, f func()) error {
 	ts := time.Now()
