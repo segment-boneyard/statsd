@@ -84,9 +84,14 @@ func (c *Client) Increment(stat string, count int, rate float64) error {
 	return c.send(stat, rate, "%d|c", count)
 }
 
-// Increment increments the counter for the given bucket by 1 at a rate of 1.
+// Incr increments the counter for the given bucket by 1 at a rate of 1.
 func (c *Client) Incr(stat string) error {
 	return c.Increment(stat, 1, 1)
+}
+
+// IncrBy increments the counter for the given bucket by N at a rate of 1.
+func (c *Client) IncrBy(stat string, n int) error {
+	return c.Increment(stat, n, 1)
 }
 
 // Decrement decrements the counter for the given bucket.
@@ -94,9 +99,14 @@ func (c *Client) Decrement(stat string, count int, rate float64) error {
 	return c.Increment(stat, -count, rate)
 }
 
-// Decrement decrements the counter for the given bucket by 1 at a rate of 1.
+// Decr decrements the counter for the given bucket by 1 at a rate of 1.
 func (c *Client) Decr(stat string) error {
 	return c.Increment(stat, -1, 1)
+}
+
+// DecrBy decrements the counter for the given bucket by N at a rate of 1.
+func (c *Client) DecrBy(stat string, n int) error {
+	return c.Increment(stat, -n, 1)
 }
 
 // Duration records time spent for the given bucket with time.Duration.
