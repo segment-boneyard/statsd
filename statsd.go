@@ -105,8 +105,8 @@ func (c *Client) Decr(stat string) error {
 }
 
 // DecrBy decrements the counter for the given bucket by N at a rate of 1.
-func (c *Client) DecrBy(stat string, n int) error {
-	return c.Increment(stat, -n, 1)
+func (c *Client) DecrBy(stat string, value int) error {
+	return c.Increment(stat, -value, 1)
 }
 
 // Duration records time spent for the given bucket with time.Duration.
@@ -120,8 +120,8 @@ func (c *Client) Timing(stat string, delta int, rate float64) error {
 }
 
 // Histogram is an alias of .Timing() until statsd implementations figure their shit out.
-func (c *Client) Histogram(stat string, n int, rate float64) error {
-	return c.send(stat, rate, "%d|ms", n)
+func (c *Client) Histogram(stat string, value int, rate float64) error {
+	return c.send(stat, rate, "%d|ms", value)
 }
 
 // Time calculates time spent in given function and send it.
@@ -141,9 +141,19 @@ func (c *Client) IncrementGauge(stat string, value int, rate float64) error {
 	return c.send(stat, rate, "+%d|g", value)
 }
 
+// IncrementGaugeBy increments the value of the gauge.
+func (c *Client) IncrementGaugeBy(stat string, value int) error {
+	return c.send(stat, 1, "+%d|g", value)
+}
+
 // DecrementGauge decrements the value of the gauge.
 func (c *Client) DecrementGauge(stat string, value int, rate float64) error {
 	return c.send(stat, rate, "-%d|g", value)
+}
+
+// DecrementGaugeBy decrements the value of the gauge.
+func (c *Client) DecrementGaugeBy(stat string, value int) error {
+	return c.send(stat, 1, "-%d|g", value)
 }
 
 // Unique records unique occurences of events.
