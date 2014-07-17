@@ -114,6 +114,11 @@ func (c *Client) Duration(stat string, duration time.Duration, rate float64) err
 	return c.send(stat, rate, "%d|ms", millisecond(duration))
 }
 
+// DurationSince records time spent for the given bucket since `t`.
+func (c *Client) DurationSince(stat string, t time.Time) error {
+	return c.send(stat, 1, "%d|ms", millisecond(time.Since(t)))
+}
+
 // Timing records time spent for the given bucket in milliseconds.
 func (c *Client) Timing(stat string, delta int, rate float64) error {
 	return c.send(stat, rate, "%d|ms", delta)
