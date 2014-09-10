@@ -166,6 +166,11 @@ func (c *Client) Unique(stat string, value int, rate float64) error {
 	return c.send(stat, rate, "%d|s", value)
 }
 
+// Annotate sends an annotation.
+func (c *Client) Annotate(name string, value string, args ...interface{}) error {
+	return c.send(name, 1, "%s|a", fmt.Sprintf(value, args...))
+}
+
 // Flush flushes writes any buffered data to the network.
 func (c *Client) Flush() error {
 	return c.buf.Flush()
